@@ -476,19 +476,31 @@ export default function AddTrainerDetailsPage() {
 
   /* -------------------- VALIDATION -------------------- */
   const validateStep = () => {
-    if (step === 1) {
-      return (
-        formData.firstName &&
-        formData.lastName &&
-        formData.designation &&
-        formData.dateOfBirth &&
-        formData.category &&
-        formData.subCategory &&
-        formData.experience &&
-        formData.email &&
-        formData.certificates.length > 0
-      );
-    }
+if (step === 1) {
+  const cleanPhone = formData.phone.replace(/\D/g, "");
+
+  if (
+    !formData.firstName ||
+    !formData.lastName ||
+    !formData.designation ||
+    !formData.dateOfBirth ||
+    !formData.category ||
+    !formData.subCategory ||
+    !formData.experience ||
+    !formData.email ||
+    !formData.phone ||
+    formData.certificates.length === 0
+  ) {
+    return false;
+  }
+
+  if (cleanPhone.length < 10) {
+    alert("Phone number must be at least 10 digits");
+    return false;
+  }
+
+  return true;
+}
 
     if (step === 2) {
       if (
@@ -761,6 +773,21 @@ export default function AddTrainerDetailsPage() {
                 }
               />
             </div>
+            {/* Phone Number */}
+<div className="flex flex-col">
+  <label className="text-sm font-semibold mb-2">
+    Phone Number<span className="text-red-500">*</span>
+  </label>
+  <input
+    type="tel"
+    className={inputClass}
+    value={formData.phone}
+    onChange={(e) =>
+      setFormData({ ...formData, phone: e.target.value })
+    }
+    placeholder="Enter phone number"
+  />
+</div>
 
             {/* Select Category */}
             <div className="flex flex-col">
@@ -885,44 +912,49 @@ export default function AddTrainerDetailsPage() {
               />
             </div>
 
-            {/* Upload Certification */}
-            <div className="flex flex-col relative">
-              <label className="text-sm font-semibold mb-2">
-                Upload Certification<span className="text-red-500">*</span> /
-                License Number
-              </label>
+{/* Upload Certification */}
+<div className="flex flex-col">
+  <label className="text-sm font-semibold mb-2">
+    Upload Certification<span className="text-red-500">*</span> /
+    License Number
+  </label>
 
-              <input
-                readOnly
-                value={
-                  formData.certificates.length
-                    ? `${formData.certificates.length}/3 file(s) selected`
-                    : ""
-                }
-                placeholder="Upload certification images"
-                className={`${inputClass} pr-12`}
-              />
+  {/* THIS wrapper is important */}
+  <div className="relative w-full">
 
-              <button
-                type="button"
-                onClick={() => certificateInputRef.current.click()}
-                className="absolute right-3 top-[36px] w-8 h-8 rounded-full
-   border-2 border-orange-500 text-orange-500
-   flex items-center justify-center"
+    <input
+      readOnly
+      value={
+        formData.certificates.length
+          ? `${formData.certificates.length}/3 file(s) selected`
+          : ""
+      }
+      placeholder="Upload certification images"
+      className={`${inputClass} pr-12`}
+    />
 
+    <button
+      type="button"
+      onClick={() => certificateInputRef.current.click()}
+      className="absolute right-3 top-1/2 -translate-y-1/2"
+    >
+      <img
+        src="/upload.png"
+        alt="upload"
+        className="w-6 h-6"
+      />
+    </button>
 
-              >
-                ↑
-              </button>
+  </div>
 
-              <input
-                type="file"
-                multiple
-                ref={certificateInputRef}
-                className="hidden"
-                onChange={handleCertificateChange}
-              />
-            </div>
+  <input
+    type="file"
+    multiple
+    ref={certificateInputRef}
+    className="hidden"
+    onChange={handleCertificateChange}
+  />
+</div>
           </div>
         )}
 
@@ -1039,15 +1071,18 @@ export default function AddTrainerDetailsPage() {
                     className={`${inputClass} w-full pr-12`}
                   />
 
-                  <button
-                    type="button"
-                    onClick={() => aadharInputRef.current.click()}
-                    className="absolute right-3 top-1/2 -translate-y-1/2
-        w-8 h-8 rounded-full border border-orange-500
-        text-orange-500 flex items-center justify-center bg-white"
-                  >
-                    +
-                  </button>
+<button
+  type="button"
+  onClick={() => aadharInputRef.current.click()}
+  className="absolute right-3 top-1/2 -translate-y-1/2
+  w-8 h-8 flex items-center justify-center bg-white"
+>
+  <img
+    src="/upload.png"
+    alt="upload"
+    className="w-6 h-6 object-contain"
+  />
+</button>
 
                   <input
                     type="file"

@@ -1018,15 +1018,18 @@ export default function AddTrainerDetailsPage() {
                     className={`${inputClass} w-full pr-12`}
                   />
 
-                  <button
-                    type="button"
-                    onClick={() => aadharInputRef.current.click()}
-                    className="absolute right-3 top-1/2 -translate-y-1/2
-              w-8 h-8 rounded-full border border-orange-500
-              text-orange-500 flex items-center justify-center bg-white"
-                  >
-                    +
-                  </button>
+<button
+  type="button"
+  onClick={() => aadharInputRef.current.click()}
+  className="absolute right-3 top-1/2 -translate-y-1/2
+  w-8 h-8 flex items-center justify-center bg-white"
+>
+  <img
+    src="/upload.png"
+    alt="upload"
+    className="w-6 h-6 object-contain"
+  />
+</button>
 
                   <input
                     type="file"
