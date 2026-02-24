@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../../../../firebase";
 import { useAuth } from "../../../../context/AuthContext";
@@ -6,7 +6,7 @@ import { useAuth } from "../../../../context/AuthContext";
 // 🔥 Firestore save
 import { doc, setDoc, arrayUnion } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
-
+import { ChevronDown } from "lucide-react";
 const ParticipantConfiguration = ({ formData, setFormData }) => {
   const { user } = useAuth();
   const auth = getAuth();
@@ -15,7 +15,22 @@ const ParticipantConfiguration = ({ formData, setFormData }) => {
   const [otherCustomers, setOtherCustomers] = useState([
     { name: "", phone: "" },
   ]);
+  const categoryRef = useRef(null);
+  const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
 
+  const categories = [
+    "Martial Arts",
+    "Team Ball Sports",
+    "Racket Sports",
+    "Fitness",
+    "Target & Precision Sports",
+    "Equestrian Sports",
+    "Adventure & Outdoor Sports",
+    "Ice Sports",
+    "Aquatic Sports",
+    "Wellness",
+    "Dance",
+  ];
   const inputStyle =
     "w-full border border-orange-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-orange-400 outline-none";
 
@@ -110,7 +125,16 @@ const ParticipantConfiguration = ({ formData, setFormData }) => {
       console.error("Error saving Participant Configuration ❌", error);
     }
   };
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (categoryRef.current && !categoryRef.current.contains(e.target)) {
+        setShowCategoryDropdown(false);
+      }
+    };
 
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
   return (
     <div className="w-full space-y-6">
       {/* ================= MAIN CARD ================= */}
@@ -130,10 +154,9 @@ const ParticipantConfiguration = ({ formData, setFormData }) => {
                 type="button"
                 onClick={() => handleChange("ageGroup", age)}
                 className={`px-4 py-2 rounded-md border text-sm transition
-                  ${
-                    formData?.participants?.ageGroup === age
-                      ? "bg-orange-500 text-white border-orange-500"
-                      : "border-orange-400 text-gray-700 hover:bg-orange-50"
+                  ${formData?.participants?.ageGroup === age
+                    ? "bg-orange-500 text-white border-orange-500"
+                    : "border-orange-400 text-gray-700 hover:bg-orange-50"
                   }`}
               >
                 {age}
@@ -243,19 +266,43 @@ const ParticipantConfiguration = ({ formData, setFormData }) => {
 
           <div>
             <label className="block font-medium mb-2">Add Category*</label>
-            <select className={inputStyle}>
-              <option>Select Categories</option>
-              <option>Martial Arts</option>
-              <option>Team Ball Sports</option>
-              <option>Racket Sports</option>
-              <option>Fitness</option>
-              <option>Target & Precision Sports</option>
-              <option>Equestrian Sports</option>
-              <option>Adventure & Outdoor Sports</option>
-              <option>Ice Sports</option>
-              <option>Wellness</option>
-              <option>Dance</option>
-            </select>
+
+            <div ref={categoryRef} className="relative">
+              <button
+                type="button"
+                onClick={() => setShowCategoryDropdown(!showCategoryDropdown)}
+                className={`${inputStyle} flex items-center justify-between text-left`}
+              >
+                <span>
+                  {formData?.participants?.category
+                    ? formData.participants.category
+                    : "Select Category"}
+                </span>
+
+                <ChevronDown
+                  size={18}
+                  className={`ml-2 transition-transform ${showCategoryDropdown ? "rotate-180" : ""
+                    }`}
+                />
+              </button>
+
+              {showCategoryDropdown && (
+                <div className="absolute z-50 mt-1 w-full bg-white border rounded-lg shadow-md max-h-48 overflow-y-auto">
+                  {categories.map((cat) => (
+                    <div
+                      key={cat}
+                      onClick={() => {
+                        handleChange("category", cat);
+                        setShowCategoryDropdown(false);
+                      }}
+                      className="px-4 py-2 hover:bg-blue-100 cursor-pointer"
+                    >
+                      {cat}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>

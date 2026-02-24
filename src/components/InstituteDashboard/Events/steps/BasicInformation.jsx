@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
+import { ChevronDown } from "lucide-react";
 import { storage } from "../../../../firebase";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
@@ -9,7 +10,11 @@ import { getAuth } from "firebase/auth";
 
 const BasicInformation = ({ formData, setFormData }) => {
   const [preview, setPreview] = useState(formData?.basicInfo?.banner || null);
+  const eventTypeRef = useRef(null);
+  const categoryRef = useRef(null);
 
+  const [showEventTypeDropdown, setShowEventTypeDropdown] = useState(false);
+  const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
   const inputStyle =
     "w-full border border-orange-400 rounded-md px-4 py-2 bg-white outline-none";
 
@@ -86,7 +91,22 @@ const BasicInformation = ({ formData, setFormData }) => {
       console.error("Error saving basic information ❌", error);
     }
   };
+  useEffect(() => {
+    const handleClickOutside = (e) => {
 
+      if (eventTypeRef.current && !eventTypeRef.current.contains(e.target)) {
+        setShowEventTypeDropdown(false);
+      }
+
+      if (categoryRef.current && !categoryRef.current.contains(e.target)) {
+        setShowCategoryDropdown(false);
+      }
+
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
   return (
     <div>
       <h2 className="text-xl font-bold mb-6">Basic Information</h2>
@@ -106,19 +126,42 @@ const BasicInformation = ({ formData, setFormData }) => {
         {/* Event Type */}
         <div>
           <label className="block text-sm font-medium mb-2">Event Type*</label>
-          <select
-            className={inputStyle}
-            value={formData?.basicInfo?.eventType || ""}
-            onChange={(e) => handleChange("eventType", e.target.value)}
-          >
-            <option value="">Event Types</option>
-            <option>Tournament</option>
-            <option>Training Camp</option>
-            <option>Workshop</option>
-            <option>Trial Session</option>
-            <option>Fitness Event</option>
-            <option>Other</option>
-          </select>
+          <div ref={eventTypeRef} className="relative">
+            <button
+              type="button"
+              onClick={() => setShowEventTypeDropdown(!showEventTypeDropdown)}
+              className={`${inputStyle} flex items-center justify-between text-left`}
+            >
+              <span>
+                {formData?.basicInfo?.eventType || "Event Types"}
+              </span>
+
+              <ChevronDown
+                size={18}
+                className={`ml-2 transition-transform ${showEventTypeDropdown ? "rotate-180" : ""
+                  }`}
+              />
+            </button>
+
+            {showEventTypeDropdown && (
+              <div className="absolute z-50 mt-1 w-full left-0 bg-white border rounded-lg shadow-md max-h-48 overflow-y-auto">
+
+                {["Tournament", "Training Camp", "Workshop", "Trial Session", "Fitness Event", "Other"].map((type) => (
+                  <div
+                    key={type}
+                    onClick={() => {
+                      handleChange("eventType", type);
+                      setShowEventTypeDropdown(false);
+                    }}
+                    className="px-4 py-2 hover:bg-blue-100 cursor-pointer"
+                  >
+                    {type}
+                  </div>
+                ))}
+
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Sports Categories */}
@@ -126,23 +169,53 @@ const BasicInformation = ({ formData, setFormData }) => {
           <label className="block text-sm font-medium mb-2">
             Sports Categories*
           </label>
-          <select
-            className={inputStyle}
-            value={formData?.basicInfo?.category || ""}
-            onChange={(e) => handleChange("category", e.target.value)}
-          >
-            <option>Select Categories</option>
-            <option>Martial Arts</option>
-            <option>Team Ball Sports</option>
-            <option>Racket Sports</option>
-            <option>Fitness</option>
-            <option>Target & Precision Sports</option>
-            <option>Equestrian Sports</option>
-            <option>Adventure & Outdoor Sports</option>
-            <option>Ice Sports</option>
-            <option>Wellness</option>
-            <option>Dance</option>
-          </select>
+          <div ref={categoryRef} className="relative">
+            <button
+              type="button"
+              onClick={() => setShowCategoryDropdown(!showCategoryDropdown)}
+              className={`${inputStyle} flex items-center justify-between text-left`}
+            >
+              <span>
+                {formData?.basicInfo?.category || "Select Categories"}
+              </span>
+
+              <ChevronDown
+                size={18}
+                className={`ml-2 transition-transform ${showCategoryDropdown ? "rotate-180" : ""
+                  }`}
+              />
+            </button>
+
+            {showCategoryDropdown && (
+              <div className="absolute z-50 mt-1 w-full left-0 bg-white border rounded-lg shadow-md max-h-48 overflow-y-auto">
+
+                {[
+                  "Martial Arts",
+                  "Team Ball Sports",
+                  "Racket Sports",
+                  "Fitness",
+                  "Target & Precision Sports",
+                  "Equestrian Sports",
+                  "Adventure & Outdoor Sports",
+                  "Ice Sports",
+                  "Wellness",
+                  "Dance"
+                ].map((cat) => (
+                  <div
+                    key={cat}
+                    onClick={() => {
+                      handleChange("category", cat);
+                      setShowCategoryDropdown(false);
+                    }}
+                    className="px-4 py-2 hover:bg-blue-100 cursor-pointer"
+                  >
+                    {cat}
+                  </div>
+                ))}
+
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Banner Upload */}

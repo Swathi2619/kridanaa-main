@@ -9,7 +9,6 @@ import {
 
 const FacilitiesInfrastructure = ({ setStep }) => {
   const [facility, setFacility] = useState("");
-  const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
@@ -35,40 +34,33 @@ const FacilitiesInfrastructure = ({ setStep }) => {
   }, []);
 
   // ================= SAVE =================
-  const handleSave = async () => {
-    // ✅ Only validate field
-    if (!facility.trim()) {
-      setErrors({ facility: "Please fill the field" });
-      return;
-    }
+const handleSave = async () => {
+  try {
+    setSaving(true);
 
-    try {
-      setSaving(true);
+    const docRef = doc(db, "myactivity", "defaultDoc");
 
-      const docRef = doc(db, "myactivity", "defaultDoc"); // change if needed
+    await setDoc(
+      docRef,
+      {
+        facilitiesInfrastructure: facility, // can be empty now
+        updatedAt: serverTimestamp(),
+      },
+      { merge: true }
+    );
 
-      await setDoc(
-        docRef,
-        {
-          facilitiesInfrastructure: facility,
-          updatedAt: serverTimestamp(),
-        },
-        { merge: true }
-      );
+    alert("Saved Successfully ✅");
+  } catch (error) {
+    console.error("🔥 Save Error:", error);
+    alert("Save Failed ❌");
+  }
 
-      alert("Saved Successfully ✅");
-    } catch (error) {
-      console.error("🔥 Save Error:", error);
-      alert("Save Failed ❌");
-    }
-
-    setSaving(false);
-  };
+  setSaving(false);
+};
 
   // ================= CANCEL =================
   const handleCancel = () => {
     setFacility("");
-    setErrors({});
   };
 
   if (loading) {
@@ -77,8 +69,16 @@ const FacilitiesInfrastructure = ({ setStep }) => {
 
   return (
     <div className="w-full">
+        {/* BACK */}
+      <div
+        onClick={() => setStep(1)}
+        className="flex items-center gap-2 text-orange-600 font-medium mb-4 cursor-pointer"
+      >
+        ← Back
+      </div>
+       <div className="border-b border-gray-300 mb-6"></div>
       <h2 className="text-xl font-semibold text-orange-600 mb-2">
-        Facilities & Infrastructure <span className="text-red-500">*</span>
+        Facilities & Infrastructure
       </h2>
 
       <textarea
@@ -92,12 +92,6 @@ const FacilitiesInfrastructure = ({ setStep }) => {
                    focus:outline-none focus:ring-1 focus:ring-orange-500
                    focus:border-orange-500 resize-none"
       />
-
-      {errors.facility && (
-        <p className="text-red-500 text-sm mt-1">
-          {errors.facility}
-        </p>
-      )}
 
       <div className="flex flex-col sm:flex-row justify-end gap-4 pt-6">
         <button

@@ -24,7 +24,6 @@ const AchievementsTrack = ({ setStep }) => {
     mediaMentions: [],
   });
 
-  const [errors, setErrors] = useState({});
 
   // ================= LOAD DATA =================
   useEffect(() => {
@@ -75,7 +74,6 @@ if (docSnap.exists()) {
 
   // ================= HANDLE INPUT =================
   const handleChange = (category, medal, value) => {
-    if (Number(value) < 0) return;
 
     setFormData((prev) => ({
       ...prev,
@@ -88,38 +86,6 @@ if (docSnap.exists()) {
       },
     }));
 
-    setErrors((prev) => ({
-      ...prev,
-      [`${category}-${medal}`]: "",
-    }));
-  };
-
-  // ================= VALIDATION =================
-  const validate = () => {
-    let newErrors = {};
-
-    ["district", "state", "national"].forEach((level) => {
-      ["gold", "silver", "bronze"].forEach((medal) => {
-        const value = formData.achievements[level][medal];
-
-        if (value === "") {
-          newErrors[`${level}-${medal}`] = "Required";
-        } else if (Number(value) < 0) {
-          newErrors[`${level}-${medal}`] = "Cannot be negative";
-        }
-      });
-    });
-
-    if (formData.awardsImages.length === 0) {
-      newErrors.awardsImages = "Upload at least one award image";
-    }
-
-    if (formData.mediaMentions.length === 0) {
-      newErrors.mediaMentions = "Upload at least one media image";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
   };
 
   // ================= CLOUDINARY UPLOAD =================
@@ -205,12 +171,6 @@ const handleUpload = async (e, type) => {
       return;
     }
 
-    const isValid = validate();
-    if (!isValid) {
-      alert("Please fill all required details.");
-      return;
-    }
-
     try {
       setSaving(true);
 
@@ -233,19 +193,17 @@ const handleUpload = async (e, type) => {
   };
 
   // ================= CANCEL =================
-  const handleCancel = () => {
-    setFormData({
-      achievements: {
-        district: { gold: "", silver: "", bronze: "" },
-        state: { gold: "", silver: "", bronze: "" },
-        national: { gold: "", silver: "", bronze: "" },
-      },
-      awardsImages: [],
-      mediaMentions: [],
-    });
-
-    setErrors({});
-  };
+const handleCancel = () => {
+  setFormData({
+    achievements: {
+      district: { gold: "", silver: "", bronze: "" },
+      state: { gold: "", silver: "", bronze: "" },
+      national: { gold: "", silver: "", bronze: "" },
+    },
+    awardsImages: [],
+    mediaMentions: [],
+  });
+};
 
   if (loading) return <p className="p-6 text-gray-500">Loading...</p>;
 
@@ -290,17 +248,8 @@ const handleUpload = async (e, type) => {
                       onChange={(e) =>
                         handleChange(level, medal, e.target.value)
                       }
-                      className={`w-full border rounded px-2 py-1 ${
-                        errors[`${level}-${medal}`]
-                          ? "border-red-500"
-                          : "border-gray-300"
-                      }`}
+className="w-full border border-gray-300 rounded px-2 py-1"
                     />
-                    {errors[`${level}-${medal}`] && (
-                      <p className="text-red-500 text-xs">
-                        {errors[`${level}-${medal}`]}
-                      </p>
-                    )}
                   </td>
                 ))}
               </tr>
@@ -359,10 +308,6 @@ const handleUpload = async (e, type) => {
               {formData[type].length} image
               {formData[type].length > 1 ? "s" : ""} uploaded
             </p>
-          )}
-
-          {errors[type] && (
-            <p className="text-red-500 text-sm mt-2">{errors[type]}</p>
           )}
         </div>
       ))}

@@ -16,7 +16,6 @@ const MediaGallery = ({ setStep }) => {
     uniformImages: []
   });
 
-  const [errors, setErrors] = useState({});
 
   // ================= LOAD DATA =================
   useEffect(() => {
@@ -41,63 +40,30 @@ const MediaGallery = ({ setStep }) => {
   }, [user]);
 
   // ================= FILE CHANGE =================
-  const handleFileChange = (e) => {
-    const { name, files } = e.target;
+const handleFileChange = (e) => {
+  const { name, files } = e.target;
+  if (!files[0]) return;
 
-    if (!files[0]) return;
+  const selectedFiles = Array.from(files);
 
-    const selectedFiles = Array.from(files);
+  setFormData((prev) => {
+    const existingImages = prev[name] || [];
 
-    setFormData((prev) => {
-      const existingImages = prev[name] || [];
+    const newImages = selectedFiles.map((file) =>
+      URL.createObjectURL(file)
+    );
 
-      if (existingImages.length + selectedFiles.length > 3) {
-        alert("Maximum 3 images allowed!");
-        return prev;
-      }
+    return {
+      ...prev,
+      [name]: [...existingImages, ...newImages]
+    };
+  });
+};
 
-      const newImages = selectedFiles.map((file) => {
-        if (!file.type.startsWith("image/")) {
-          alert("Only image files allowed");
-          return null;
-        }
-        return URL.createObjectURL(file);
-      }).filter(Boolean);
-
-      return {
-        ...prev,
-        [name]: [...existingImages, ...newImages]
-      };
-    });
-
-    setErrors((prev) => ({ ...prev, [name]: "" }));
-  };
-
-  // ================= VALIDATION =================
-  const validate = () => {
-    let newErrors = {};
-
-    if (!formData.trainingImages.length)
-      newErrors.trainingImages = "Training image required";
-
-    if (!formData.facilityImages.length)
-      newErrors.facilityImages = "Facility image required";
-
-    if (!formData.equipmentImages.length)
-      newErrors.equipmentImages = "Equipment image required";
-
-    if (!formData.uniformImages.length)
-      newErrors.uniformImages = "Uniform image required";
-
-    setErrors(newErrors);
-
-    return Object.keys(newErrors).length === 0;
-  };
 
   // ================= SAVE =================
   const handleSave = async () => {
     if (!user?.uid) return;
-    if (!validate()) return;
 
     try {
       setSaving(true);
@@ -129,7 +95,6 @@ const MediaGallery = ({ setStep }) => {
       uniformImages: []
     });
 
-    setErrors({});
   };
 
   if (loading) {
@@ -188,12 +153,6 @@ const MediaGallery = ({ setStep }) => {
                   <img src="/upload.png" alt="upload" className="w-5 h-5" />
                 </div>
               </label>
-
-              {errors[field.name] && (
-                <p className="text-red-500 text-xs mt-1">
-                  {errors[field.name]}
-                </p>
-              )}
 
             </div>
           ))}

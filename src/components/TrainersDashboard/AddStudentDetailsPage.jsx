@@ -29,7 +29,11 @@ export default function AddTrainerDetailsPage() {
   const timeRef = useRef(null);
 
   const [showTimeDropdown, setShowTimeDropdown] = useState(false);
+  const categoryRef = useRef(null);
+  const subCategoryRef = useRef(null);
 
+  const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
+  const [showSubCategoryDropdown, setShowSubCategoryDropdown] = useState(false);
   /* -------------------- REFS -------------------- */
   const profileInputRef = useRef(null);
 
@@ -44,6 +48,7 @@ export default function AddTrainerDetailsPage() {
     "Equestrian Sports",
     "Adventure & Outdoor Sports",
     "Ice Sports",
+    "Aquatic Sports",
     "Wellness",
     "Dance",
   ];
@@ -51,94 +56,266 @@ export default function AddTrainerDetailsPage() {
   const subCategoryMap = {
     "Martial Arts": [
       "Karate",
+      "Kung Fu",
+      "Krav Maga",
+      "Muay Thai",
       "Taekwondo",
+      "Judo",
+      "Brazilian Jiu-Jitsu",
+      "Aikido",
+      "Jeet Kune Do",
+      "Capoeira",
+      "Sambo",
+      "Silat",
+      "Kalaripayattu",
+      "Hapkido",
+      "Wing Chun",
+      "Shaolin",
+      "Ninjutsu",
+      "Kickboxing",
       "Boxing",
       "Wrestling",
-      "Fencing",
-      "Kendo",
+      "Shorinji Kempo",
+      "Kyokushin",
+      "Goju-ryu",
+      "Shotokan",
+      "Wushu",
+      "Savate",
+      "Lethwei",
+      "Bajiquan",
+      "Hung Gar",
+      "Praying Mantis Kung Fu"
     ],
     "Team Ball Sports": [
-      "Football",
-      "Hockey",
+      "Football / Soccer",
       "Basketball",
       "Handball",
       "Rugby",
-      "American Football",
-      "Water Polo",
+      "Futsal",
+      "Field Hockey",
       "Lacrosse",
+      "Gaelic Football",
+      "Volleyball",
+      "Beach Volleyball",
+      "Sepak Takraw",
+      "Roundnet (Spikeball)",
+      "Netball",
+      "Cricket",
+      "Baseball",
+      "Softball",
+      "Wheelchair Rugby",
+      "Dodgeball",
+      "Korfball"
     ],
     "Racket Sports": [
       "Tennis",
+      "Table Tennis",
       "Badminton",
+      "Squash",
+      "Racquetball",
+      "Padel",
       "Pickleball",
+      "Platform Tennis",
+      "Real Tennis",
       "Soft Tennis",
-      "Padel Tennis",
-      "Speedminton",
+      "Frontenis",
+      "Speedminton (Crossminton)",
+      "Paddle Tennis (POP Tennis)",
+      "Speed-ball",
+      "Chaza",
+      "Totem Tennis (Swingball)",
+      "Matkot",
+      "Jombola"
     ],
     Fitness: [
-      "Strength / Muscular Fitness",
-      "Muscular Endurance",
-      "Flexibility Fitness",
-      "Balance & Stability",
-      "Skill / Performance Fitness",
+      "Gym Workout",
+      "Weight Training",
+      "Bodybuilding",
+      "Powerlifting",
+      "CrossFit",
+      "Calisthenics",
+      "Circuit Training",
+      "HIIT",
+      "Functional Training",
+      "Core Training",
+      "Mobility Training",
+      "Stretching",
+      "Resistance Band Training",
+      "Kettlebell Training",
+      "Boot Camp Training",
+      "Spinning",
+      "Step Fitness",
+      "Pilates",
+      "Yoga",
     ],
     "Target & Precision Sports": [
       "Archery",
-      "Shooting",
-      "Darts",
-      "Bowling",
       "Golf",
+      "Bowling",
+      "Darts",
+      "Snooker",
+      "Pool",
       "Billiards",
+      "Target Shooting",
+      "Clay Pigeon Shooting",
+      "Air Rifle Shooting",
+      "Air Pistol Shooting",
+      "Croquet",
+      "Petanque",
       "Bocce",
-      "Lawn",
+      "Lawn Bowls",
+      "Carom Billiards",
+      "Nine-Pin Bowling",
+      "Disc Golf",
+      "Kubb",
+      "Pitch and Putt",
+      "Shove Ha’penny",
+      "Toad in the Hole",
+      "Bat and Trap",
+      "Boccia",
+      "Gateball"
     ],
     "Equestrian Sports": [
-      "Dressage",
-      "Show Jumping",
-      "Eventing",
-      "Cross Country",
-      "Endurance Riding",
-      "Polo",
       "Horse Racing",
-      "Para-Equestrian",
+      "Barrel Racing",
+      "Rodeo",
+      "Mounted Archery",
+      "Tent Pegging",
     ],
     "Adventure & Outdoor Sports": [
       "Rock Climbing",
+      "Mountaineering",
       "Trekking",
-      "Camping",
-      "Kayaking",
-      "Paragliding",
-      "Surfing",
+      "Hiking",
       "Mountain Biking",
-      "Ziplining",
+      "Sandboarding",
+      "Orienteering",
+      "Obstacle Course Racing",
+      "Skydiving",
+      "Paragliding",
+      "Hang Gliding",
+      "Parachuting",
+      "Hot-air Ballooning",
+      "Skiing",
+      "Snowboarding",
+      "Ice Climbing",
+      "Heli-skiing",
+      "Bungee Jumping",
+      "BASE Jumping",
+      "Canyoning",
+      "Kite Buggy",
+      "Zorbing",
+      "Zip Lining",
+    ],
+    "Aquatic Sports": [
+      "Swimming",
+      "Water Polo",
+      "Surfing",
+      "Scuba Diving",
+      "Snorkeling",
+      "Freediving",
+      "Kayaking",
+      "Canoeing",
+      "Rowing",
+      "Sailing",
+      "Windsurfing",
+      "Kite Surfing",
+      "Jet Skiing",
+      "Wakeboarding",
+      "Water Skiing",
+      "Stand-up Paddleboarding",
+      "Whitewater Rafting",
+      "Dragon Boat Racing",
+      "Artistic Swimming",
+      "Open Water Swimming",
     ],
     "Ice Sports": [
       "Ice Skating",
       "Figure Skating",
       "Ice Hockey",
       "Speed Skating",
-      "Short Track Skating",
-      "Ice Dancing",
-      "Curling",
+      "Ice Dance",
       "Synchronized Skating",
+      "Curling",
+      "Broomball",
+      "Bobsleigh",
+      "Skiboarding",
+      "Ice Dragon Boat Racing",
+      "Ice Cross Downhill",
     ],
     Wellness: [
-      "Physical Wellness",
+      "Yoga & Meditation",
+      "Spa & Relaxation",
       "Mental Wellness",
-      "Social Wellness",
-      "Emotional Wellness",
-      "Spiritual Wellness",
-      "Lifestyle Wellness",
+      "Fitness",
+      "Nutrition",
+      "Traditional & Alternative Therapies",
+      "Rehabilitation",
+      "Lifestyle Coaching"
     ],
     Dance: [
-      "Classical Dance",
-      "Contemporary Dance",
-      "Hip-Hop Dance",
+      "Bharatanatyam",
+      "Kathak",
+      "Kathakali",
+      "Kuchipudi",
+      "Odissi",
+      "Mohiniyattam",
+      "Manipuri",
+      "Sattriya",
+      "Chhau",
+      "Yakshagana",
+      "Lavani",
+      "Ghoomar",
+      "Kalbelia",
+      "Garba",
+      "Dandiya Raas",
+      "Bhangra",
+      "Bihu",
+      "Dollu Kunitha",
+      "Theyyam",
+      "Ballet",
+      "Contemporary",
+      "Hip Hop",
+      "Breakdance",
+      "Jazz Dance",
+      "Tap Dance",
+      "Modern Dance",
+      "Street Dance",
+      "House Dance",
+      "Locking",
+      "Popping",
+      "Krumping",
+      "Waacking",
+      "Voguing",
+      "Salsa",
+      "Bachata",
+      "Merengue",
+      "Cha-Cha",
+      "Rumba",
+      "Samba",
+      "Paso Doble",
+      "Jive",
+      "Tango",
+      "Waltz",
+      "Foxtrot",
+      "Quickstep",
+      "Flamenco",
+      "Irish Stepdance",
+      "Scottish Highland Dance",
+      "Morris Dance",
+      "Hula",
+      "Maori Haka",
+      "African Tribal Dance",
+      "Zumba",
+      "K-Pop Dance",
+      "Shuffle Dance",
+      "Electro Dance",
+      "Pole Dance",
+      "Ballroom Dance",
+      "Line Dance",
+      "Square Dance",
       "Folk Dance",
-      "Western Dance",
-      "Latin Dance",
-      "Fitness Dance",
-      "Creative & Kids Dance",
+      "Contra Dance",
     ],
   };
   const belts = [
@@ -235,8 +412,7 @@ export default function AddTrainerDetailsPage() {
     if (step === 2) {
       return Boolean(
         formData.monthlyDate &&
-        formData.address &&
-        formData.aadharFiles.length > 0,
+        formData.address
       );
     }
 
@@ -425,14 +601,26 @@ export default function AddTrainerDetailsPage() {
 
   useEffect(() => {
     const handleClickOutside = (e) => {
+
       if (timeRef.current && !timeRef.current.contains(e.target)) {
         setShowTimeDropdown(false);
       }
+
+      if (categoryRef.current && !categoryRef.current.contains(e.target)) {
+        setShowCategoryDropdown(false);
+      }
+
+      if (subCategoryRef.current && !subCategoryRef.current.contains(e.target)) {
+        setShowSubCategoryDropdown(false);
+      }
+
     };
 
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+
   /* -------------------- UI -------------------- */
   return (
     <div className="min-h-screen flex justify-center bg-white py-10">
@@ -483,9 +671,8 @@ export default function AddTrainerDetailsPage() {
               {[1, 2].map((s) => (
                 <div
                   key={s}
-                  className={`h-3 flex-1 rounded-full ${
-                    step >= s ? "bg-orange-500" : "bg-gray-300"
-                  }`}
+                  className={`h-3 flex-1 rounded-full ${step >= s ? "bg-orange-500" : "bg-gray-300"
+                    }`}
                 />
               ))}
             </div>
@@ -601,42 +788,106 @@ export default function AddTrainerDetailsPage() {
               <label className="text-sm font-semibold mb-2">
                 Select Category*
               </label>
-              <select
-                className={inputClass}
-                value={formData.category}
-                onChange={handleCategoryChange}
-              >
-                <option value="">Select Category</option>
-                {categories.map((cat) => (
-                  <option key={cat}>{cat}</option>
-                ))}
-              </select>
+              <div ref={categoryRef} className="relative">
+                <button
+                  type="button"
+                  onClick={() => setShowCategoryDropdown(!showCategoryDropdown)}
+                  className={`${inputClass} w-full flex items-center justify-between`}
+                >
+                  <span>
+                    {formData.category ? formData.category : "Select Category"}
+                  </span>
+
+                  <ChevronDown
+                    size={16}
+                    className={`transition-transform ${showCategoryDropdown ? "rotate-180" : ""
+                      }`}
+                  />
+                </button>
+
+                {showCategoryDropdown && (
+                  <div className="absolute z-50 mt-1 w-full bg-white border rounded-lg shadow-md max-h-40 overflow-y-auto">
+
+                    {categories.map((cat) => (
+                      <div
+                        key={cat}
+                        onClick={() => {
+                          setFormData(prev => ({
+                            ...prev,
+                            category: cat,
+                            subCategory: ""
+                          }));
+
+                          setAvailableSubCategories(
+                            subCategoryMap[cat] ? [...subCategoryMap[cat]] : []
+                          );
+
+                          setShowSubCategoryDropdown(false);
+                          setShowCategoryDropdown(false);
+                        }}
+                        className="px-4 py-2 hover:bg-blue-100 cursor-pointer"
+                      >
+                        {cat}
+                      </div>
+                    ))}
+
+                  </div>
+                )}
+              </div>
             </div>
 
             <div className="flex flex-col">
               <label className="text-sm font-semibold mb-2">
                 Select Sub-Category*
               </label>
-              <select
-                className={inputClass}
-                value={formData.subCategory}
-                disabled={!formData.category}
-                onChange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    subCategory: e.target.value,
-                  }))
-                }
-              >
-                <option value="">
-                  {formData.category
-                    ? "Select Sub Category"
-                    : "Select Category First"}
-                </option>
-                {availableSubCategories.map((sub) => (
-                  <option key={sub}>{sub}</option>
-                ))}
-              </select>
+              <div ref={subCategoryRef} className="relative">
+                <button
+                  type="button"
+                  disabled={!formData.category}
+                  onClick={() =>
+                    formData.category &&
+                    setShowSubCategoryDropdown(!showSubCategoryDropdown)
+                  }
+                  className={`${inputClass} w-full flex items-center justify-between ${!formData.category && "bg-gray-100 cursor-not-allowed"
+                    }`}
+                >
+                  <span>
+                    {formData.subCategory
+                      ? formData.subCategory
+                      : formData.category
+                        ? "Select Sub Category"
+                        : "Select Category First"}
+                  </span>
+
+                  <ChevronDown
+                    size={16}
+                    className={`transition-transform ${showSubCategoryDropdown ? "rotate-180" : ""
+                      }`}
+                  />
+                </button>
+
+                {showSubCategoryDropdown && (
+                  <div className="absolute z-50 mt-1 w-full bg-white border rounded-lg shadow-md max-h-40 overflow-y-auto">
+
+                    {availableSubCategories.map((sub) => (
+                      <div
+                        key={sub}
+                        onClick={() => {
+                          setFormData(prev => ({
+                            ...prev,
+                            subCategory: sub
+                          }));
+                          setShowSubCategoryDropdown(false);
+                        }}
+                        className="px-4 py-2 hover:bg-blue-100 cursor-pointer"
+                      >
+                        {sub}
+                      </div>
+                    ))}
+
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* Row 5 */}
@@ -671,15 +922,14 @@ export default function AddTrainerDetailsPage() {
                   <span>
                     {formData.timings
                       ? timeSlots.find((t) => t.value === formData.timings)
-                          ?.label
+                        ?.label
                       : "Select Time"}
                   </span>
 
                   <ChevronDown
                     size={16}
-                    className={`transition-transform ${
-                      showTimeDropdown ? "rotate-180" : ""
-                    }`}
+                    className={`transition-transform ${showTimeDropdown ? "rotate-180" : ""
+                      }`}
                   />
                 </button>
 
@@ -757,8 +1007,7 @@ export default function AddTrainerDetailsPage() {
               </div>
               <div className="flex flex-col">
                 <label className="text-sm font-semibold mb-2">
-                  Aadhaar Front & Back Photos
-                  <span className="text-red-500">*</span>
+                 Aadhaar Front & Back Photos (Optional)
                 </label>
 
                 <div className="relative w-full">

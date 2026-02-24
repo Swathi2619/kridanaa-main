@@ -20,7 +20,7 @@ import {
   LineChart,
   Line,
 } from "recharts";
-
+import { ChevronDown } from "lucide-react";
 const AnalyticsPage = () => {
   const user = auth.currentUser;
 
@@ -254,12 +254,23 @@ const AnalyticsPage = () => {
         <h1 className="text-3xl font-bold">Growth & Performance Overview</h1>
 
         <div className="relative inline-block">
-          <button
-            onClick={() => setShowDropdown(!showDropdown)}
-            className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-xl font-semibold shadow-md border-none outline-none focus:outline-none focus:ring-0"
-          >
-            Select Month ▼
-          </button>
+<button
+  onClick={() => setShowDropdown(!showDropdown)}
+  className="bg-orange-500 hover:bg-orange-600 text-white px-5 py-2 rounded-lg font-semibold shadow-md flex items-center gap-2"
+>
+  <span>
+    {filterMonths === 1 && "1 Month"}
+    {filterMonths === 3 && "3 Months"}
+    {filterMonths === 6 && "6 Months"}
+  </span>
+
+  <ChevronDown
+    size={16}
+    className={`transition-transform duration-200 ${
+      showDropdown ? "rotate-180" : ""
+    }`}
+  />
+</button>
 
           {showDropdown && (
             <div className="absolute right-0 mt-3 w-44 bg-white rounded-lg shadow-xl border border-gray-200 z-50">

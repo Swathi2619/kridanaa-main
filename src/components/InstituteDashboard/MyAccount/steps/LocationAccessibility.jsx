@@ -79,7 +79,6 @@ const LocationAccessibility = ({ setStep }) => {
       "distance",
       "contactNumber",
       "email",
-      "website",
     ];
 
     requiredFields.forEach((field) => {
@@ -234,7 +233,7 @@ const LocationAccessibility = ({ setStep }) => {
         {/* Website */}
         <div className="flex flex-col sm:col-span-2">
           <label className="text-sm font-medium mb-2">
-            Website / Social Media Links <span className="text-red-500">*</span>
+            Website / Social Media Links
           </label>
           <input
             name="website"
